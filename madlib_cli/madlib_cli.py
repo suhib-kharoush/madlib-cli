@@ -1,3 +1,7 @@
+from os import replace
+import re
+import random
+
 def welcome_message():
     print("Welcome to Madlib game, ready to start? 😃")
 
@@ -11,36 +15,49 @@ instructions()
 
 def read_template(p):
     with open(p, 'r') as file:
-      template = file.read()
+      template = file.read().strip("\n")
+
     return template
 
-read_template('./assets/make_me_a_video_game_2.txt')
+read_template('./assets/make_me_a_video_game_template.txt')
 
-def puzzles():
-    questions = ['Guess my name?','name an adjective in my personality?', 'another one?','my friend name?', 'thing in his personality?', 'we plan to...?', 'adjective in the pet?', 'thing we want to steal?']
-    x = []
-    for i in questions:
-        question = input(i)
-        x.append(question)
-    return x
 
-def merge(text, result):
-    data = text
-    answer = data.format(*result)
-    print(answer)
-    return answer
-
-with open('./assets/madlib_result.txt', 'w') as file:
-    file.write(merge(read_template('./assets/make_me_a_video_game_2.txt'), puzzles()))
-import re
 def parse_template(text):
-    data = re.findall(r"\{(.*?)\}", read_template(text))
-    return data
-print(parse_template('./assets/make_me_a_video_game_2.txt'))
+    parts = []
+    parts = re.findall(r'\{.*?\}', text)
+    for i in range(len(parts)):
+         parts[i] = parts[i].replace("{", "")
+         parts[i] = parts[i].replace("}", "")
 
+    for i in range(text.count("{")):
+          text = text.replace(parts[i], "")
 
-
-
-
-
+    part_template = ()
+    for i in parts:
+        part_template = part_template + (i,)
+    print(text)
+    print(part_template)
+    return text, part_template 
  
+
+def merge(text, parts):
+    return text.format(*parts)
+
+def new_file(result):
+     n = random.random()
+     with open("../assets/f{}.txt".format(str(n)), 'w') as file:
+         file.write(result)
+     print(merge("It was a {} and {} {}.", ("dark", "stormy", "night")))
+
+def get_data():
+    text = read_template("../assets/make_me_a_video_game_template.txt")
+    stripped_text, parts_tuple = parse_template(text)
+    answers = []
+
+    for i in range(len(parts_tuple)):
+        x = input("enter a {} >".format(parts_tuple[i]))
+        answers.append(x)
+    results = stripped_text.format(*answers)
+    print(results)
+    new_file(results)
+
