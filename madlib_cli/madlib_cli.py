@@ -1,6 +1,7 @@
 from os import replace
 import re
 import random
+from typing import Text
 
 def welcome_message():
     print("Welcome to Madlib game, ready to start? 😃")
@@ -19,7 +20,6 @@ def read_template(p):
 
     return template
 
-read_template('./assets/make_me_a_video_game_template.txt')
 
 
 def parse_template(text):
@@ -35,22 +35,29 @@ def parse_template(text):
     part_template = ()
     for i in parts:
         part_template = part_template + (i,)
-    print(text)
-    print(part_template)
+    # print(text)
+    # print(part_template)
     return text, part_template 
- 
+
+parse_template("It was a {Adjective} and {Adjective} {Noun}.")
+
+
 
 def merge(text, parts):
     return text.format(*parts)
 
+merge("It was a {} and {}.", ("dark", "stormy", "night"))
+
+
 def new_file(result):
      n = random.random()
-     with open("../assets/f{}.txt".format(str(n)), 'w') as file:
+     with open("assets/f{}.txt".format(str(n)), 'w') as file:
          file.write(result)
      print(merge("It was a {} and {} {}.", ("dark", "stormy", "night")))
 
 def get_data():
-    text = read_template("../assets/make_me_a_video_game_template.txt")
+    text = read_template("assets/make_me_a_video_game_template.txt")
+    originalText = read_template("assets/make_me_a_video_game_output.txt")
     stripped_text, parts_tuple = parse_template(text)
     answers = []
 
@@ -60,4 +67,9 @@ def get_data():
     results = stripped_text.format(*answers)
     print(results)
     new_file(results)
+    print(originalText)
+
+get_data()
+
+
 
